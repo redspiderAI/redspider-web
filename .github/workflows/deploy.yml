@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages (gh-pages)
 
 on:
   push:
@@ -6,16 +6,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,16 +28,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright (node module)
-        run: npm install --no-save playwright@1.45.3
-
       - name: Build
         run: npm run build
 
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
-
-      - name: Smoke test (no console errors)
+      - name: Smoke test (console errors)
         run: |
           node <<'SERVE' &
           const http = require('http');
@@ -54,12 +46,8 @@ jobs:
             if (urlPath.startsWith(basePrefix)) urlPath = urlPath.slice(basePrefix.length) || '/';
             if (urlPath === '/' || urlPath === '') urlPath = '/index.html';
             const safePath = path.normalize(path.join(root, urlPath));
-            if (!safePath.startsWith(root)) {
-              res.writeHead(403); res.end('Forbidden'); return;
-            }
-            if (!fs.existsSync(safePath) || fs.statSync(safePath).isDirectory()) {
-              res.writeHead(404); res.end('Not found'); return;
-            }
+            if (!safePath.startsWith(root)) { res.writeHead(403); res.end('Forbidden'); return; }
+            if (!fs.existsSync(safePath) || fs.statSync(safePath).isDirectory()) { res.writeHead(404); res.end('Not found'); return; }
             const ext = path.extname(safePath).toLowerCase();
             res.setHeader('Content-Type', mime[ext] || 'application/octet-stream');
             fs.createReadStream(safePath).pipe(res);
@@ -69,7 +57,9 @@ jobs:
           SERVE
           SERVER_PID=$!
 
-          npx playwright codegen --help > /dev/null 2>&1 || true
+          npm install --no-save playwright@1.45.3
+          npx playwright install --with-deps chromium
+
           node <<'EOF'
           import { chromium } from 'playwright';
 
@@ -79,39 +69,23 @@ jobs:
           const go = async () => {
             const browser = await chromium.launch({ headless: true });
             const page = await browser.newPage();
-            page.on('console', (msg) => {
-              if (msg.type() === 'error') errors.push(msg.text());
-            });
+            page.on('console', (msg) => { if (msg.type() === 'error') errors.push(msg.text()); });
             page.on('pageerror', (err) => errors.push(err.message));
             await page.goto(url, { waitUntil: 'networkidle' });
             await page.waitForTimeout(2000);
             await browser.close();
-            if (errors.length) {
-              console.error('Console errors detected:', errors);
-              process.exit(1);
-            }
+            if (errors.length) { console.error('Console errors detected:', errors); process.exit(1); }
             console.log('No console errors detected');
           };
 
-          go().catch((e) => {
-            console.error(e);
-            process.exit(1);
-          });
+          go().catch((e) => { console.error(e); process.exit(1); });
           EOF
           kill $SERVER_PID
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: docs
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          publish_branch: gh-pages
+          force_orphan: true

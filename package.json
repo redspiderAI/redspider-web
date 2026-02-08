@@ -2,13 +2,12 @@
   "name": "vite-react-typescript-starter",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+    "type": "module",
   "scripts": {
     "dev": "vite",
-    "resize-images": "node ./scripts/resize_images.js",
-    "build": "vite build",
+    "build": "vite build --base=/redspider-web",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview": "vite preview --base=/redspider-web --outDir=docs --host --port=4173 --strictPort",
     "typecheck": "tsc --noEmit -p tsconfig.app.json"
   },
   "dependencies": {
