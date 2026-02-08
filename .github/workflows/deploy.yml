@@ -41,8 +41,34 @@ jobs:
 
       - name: Smoke test (no console errors)
         run: |
-          npm run preview -- --host --port 4173 --strictPort &
-          PREVIEW_PID=$!
+          node <<'SERVE' &
+          const http = require('http');
+          const fs = require('fs');
+          const path = require('path');
+          const root = path.resolve('docs');
+          const basePrefix = '/redspider-web';
+          const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif', '.ico': 'image/x-icon', '.json': 'application/json', '.txt': 'text/plain' };
+
+          const server = http.createServer((req, res) => {
+            let urlPath = (req.url || '').split('?')[0];
+            if (urlPath.startsWith(basePrefix)) urlPath = urlPath.slice(basePrefix.length) || '/';
+            if (urlPath === '/' || urlPath === '') urlPath = '/index.html';
+            const safePath = path.normalize(path.join(root, urlPath));
+            if (!safePath.startsWith(root)) {
+              res.writeHead(403); res.end('Forbidden'); return;
+            }
+            if (!fs.existsSync(safePath) || fs.statSync(safePath).isDirectory()) {
+              res.writeHead(404); res.end('Not found'); return;
+            }
+            const ext = path.extname(safePath).toLowerCase();
+            res.setHeader('Content-Type', mime[ext] || 'application/octet-stream');
+            fs.createReadStream(safePath).pipe(res);
+          });
+
+          server.listen(4173, '0.0.0.0', () => console.log('Static server on http://127.0.0.1:4173/redspider-web/'));
+          SERVE
+          SERVER_PID=$!
+
           npx playwright codegen --help > /dev/null 2>&1 || true
           node <<'EOF'
           import { chromium } from 'playwright';
@@ -72,7 +98,7 @@ jobs:
             process.exit(1);
           });
           EOF
-          kill $PREVIEW_PID
+          kill $SERVER_PID
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
