@@ -9,4 +9,7 @@ export default defineConfig(({ command }) => ({
   optimizeDeps: {
     include: ['lucide-react'],
   },
+  build: {
+    outDir: 'docs',
+  },
 }));
