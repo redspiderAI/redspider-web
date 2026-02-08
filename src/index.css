@@ -1,0 +1,288 @@
+/* stylelint-disable at-rule-no-unknown */
+/* The @tailwind and @apply directives are valid when using Tailwind + PostCSS.
+  We disable the `at-rule-no-unknown` rule here to avoid editor/linter warnings.
+  For a more robust solution, add `stylelint-config-tailwindcss` or configure
+  stylelint's `rules` in your project-level config. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom global font: 方正兰亭大黑简体 (FZLTDHJW.TTF placed at project root) */
+@font-face {
+  font-family: 'FZLanTingDHJ';
+  src: url('/FZLTDHJW.TTF') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply antialiased;
+    font-family: 'FZLanTingDHJ', ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", "Segoe UI", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+    /* Prevent horizontal scrollbar caused by transformed/absolute elements */
+    overflow-x: hidden;
+  }
+
+  /* Force the custom font globally (use !important to override utility classes) */
+  html, body, body * {
+    font-family: 'FZLanTingDHJ', ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", "Segoe UI", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif !important;
+  }
+
+  /* Explicit helper class to force 方正兰亭字体 on specific elements */
+  .fz-lanting {
+    font-family: 'FZLanTingDHJ', ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", "Segoe UI", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif !important;
+  }
+
+  /* Make box-sizing predictable to avoid subtle layout overflow */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  /* Prevent bare images from causing overflow */
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+@layer utilities {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  /* entrance animation utilities */
+  .anim-section {
+    /* use vertical entrance to avoid horizontal overflow caused by translateX */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: transform 0.7s cubic-bezier(.22,.9,.36,1), opacity 0.7s ease;
+    will-change: transform, opacity;
+  }
+
+  .anim-section.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .anim-item {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: transform 0.6s cubic-bezier(.22,.9,.36,1) var(--delay, 0s), opacity 0.6s ease var(--delay, 0s);
+    will-change: transform, opacity;
+  }
+
+  .anim-section.in-view .anim-item {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* About 组件 description 平滑过渡增强 */
+  .b_a {
+    /* 通过 Tailwind class 主要控制，但这里补充一个更稳定的过渡声明以兼容性更好 */
+    transition: opacity 0.28s ease, transform 0.28s ease, max-height 0.32s ease;
+    will-change: opacity, transform, max-height;
+  }
+
+  /* Utility to globally disable animations/transitions for screenshots or testing */
+  .no-animations .anim-section,
+  .no-animations .anim-item,
+  .no-animations .animate-fadeIn,
+  .no-animations * {
+    transition: none !important;
+    animation: none !important;
+    will-change: auto !important;
+  }
+
+  /* When disabling animations, also ensure animated elements are visible
+     (some components start with opacity:0 and rely on transitions/JS to show).
+     Force them to visible so screenshots capture content. */
+  .no-animations .anim-section,
+  .no-animations .anim-item,
+  .no-animations .animate-fadeIn {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Decorative background for About section: slanted dark bands and a centered pale panel */
+/* These are purely decorative and set pointer-events:none so they don't interfere with interaction */
+.about-top,
+.about-bottom,
+.about-center {
+  position: absolute;
+  left: 50%;
+  pointer-events: none;
+}
+
+.about-top {
+  top: -12vh;
+  width: 130%;
+  height: 36vh;
+  background: #131114;
+  border-radius: 24px;
+  transform: translateX(-50%) rotate(-6deg);
+  z-index: 10;
+}
+
+.about-bottom {
+  bottom: -12vh;
+  width: 130%;
+  height: 36vh;
+  background: #131114;
+  border-radius: 24px;
+  transform: translateX(-50%) rotate(-6deg);
+  z-index: 10;
+}
+
+.about-center {
+  top: 44%;
+  left: 50%;
+  /* use a 3D translate to promote to its own compositing layer and avoid layout shifts
+     when sibling elements receive transforms (prevents the 'moving' behaviour). */
+  transform: translate3d(-50%, -50%, 0) rotate(-3.5deg);
+  width: 110%;
+  max-width: 2260px;
+  height: 120vh;
+  background: #E3EBFF;
+  border-radius: 36px;
+  /* hint to the browser this element will transform, keep it on its own layer */
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  z-index: 15;
+  box-shadow: 0 28px 60px rgba(0,0,0,0.45);
+}
+
+@media (max-width: 768px) {
+  .about-top,
+  .about-bottom {
+    height: 28vh;
+    transform: translateX(-50%) rotate(-4deg);
+  }
+
+  .about-center {
+    height: 100vh;
+    max-width: 110%;
+    border-radius: 20px;
+    top: 48%;
+    padding: 46px 18px;
+    /* keep mobile version on its own layer as well */
+    transform: translate3d(-50%, -50%, 0) rotate(-10.8deg);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+  }
+}
+
+/* Increase About section height: override Tailwind's `min-h-screen` (100vh) to 150vh */
+#about {
+  min-height: 160vh;
+  padding-top: 28vh;
+}
+
+/* Make Cases section match About spacing and vertical offset so panels align visually */
+#cases {
+  min-height: 143vh;
+  padding-top: 30vh;
+}
+
+/* Increase Talent section height by 10vh (was min-h-screen => 100vh) */
+#talent {
+  min-height: 130vh;
+}
+
+/* Vertical offset for content inside Talent section */
+#talent {
+  padding-top: 18vh;
+}
+
+/* Visual offset for the '组织与方法论优势' block: move down by 0px */
+.about-advantages {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+@media (max-width: 768px) {
+  .about-advantages {
+    /* slightly smaller offset on small screens */
+    transform: translate3d(0, 100px, 0);
+  }
+}
+
+/* Service card collapsed state: small padding (10px) so icon appears with 10px gap to edges */
+.service-collapsed {
+  padding: 10px !important;
+}
+
+/* Visual features container - animate show/hide via opacity and max-height */
+.service-features {
+  overflow: hidden;
+  opacity: 0;
+  max-height: 0;
+  transition: max-height 0.45s cubic-bezier(.22,.9,.36,1), opacity 0.28s ease;
+}
+
+.service-features.opacity-100,
+.service-features[style*="opacity: 1"] {
+  opacity: 1;
+}
+
+/* When expanded we give a large max-height to allow the grid to expand smoothly */
+.service-expanded .service-features {
+  max-height: 2000px;
+  opacity: 1;
+}
+
+/* When collapsed, make the outer card width match the icon width using a CSS variable.
+   Use sensible defaults and increase at larger breakpoints. Center the inline-block. */
+.service-collapsed {
+  display: inline-block;
+  width: var(--service-collapsed-width, 220px);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px !important;
+  vertical-align: top;
+}
+
+@media (min-width: 768px) {
+  .service-collapsed {
+    --service-collapsed-width: 360px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .service-collapsed {
+    --service-collapsed-width: 480px;
+  }
+}
+
+/* Expanded card restores normal block layout and full width */
+.service-expanded {
+  display: block;
+  width: 100% !important;
+  padding: unset !important;
+}
+
+/* Make the clickable icon clearly interactive */
+.service-collapsed .cursor-pointer,
+.service-expanded .cursor-pointer {
+  cursor: pointer;
+}
