@@ -1,17 +1,15 @@
 import { useState } from 'react';
 import { Factory, Zap, Sun } from 'lucide-react';
 import { MAX_CONTAINER, THEME2 } from './cardStyles';
+import imgManufacturePlan from '../../data/pic/智能生产管理系统.png';
+import imgInsulator from '../../data/pic/绝缘子爬电距离自动测量系统.png';
+import imgInfrared from '../../data/pic/电力巡检红外温度异常检测系统.png';
+import imgInspection from '../../data/pic/输变电设备运检人工智能开放服务平台.png';
+import imgPV from '../../data/pic/国网山东省电力公司健康评估实验室检测测试区.png';
+import imgFallback from '../../data/pic/样本标注界面.png';
 // 图片由 cases 数据里的 `image` 字段提供，不再使用 import.meta.glob
 
 export default function Cases() {
-
-  // Prefix asset paths with Vite base to work in dev ("/") and build ("/redspider-web/")
-  const withBase = (path: string) => {
-    if (!path) return '';
-    if (/^https?:\/\//.test(path)) return path;
-    const base = import.meta.env.BASE_URL || '/';
-    return `${base}${path.replace(/^\//, '')}`;
-  };
 
   const cases = [
     {
@@ -23,7 +21,7 @@ export default function Cases() {
           name: '基于智能体的制造业生产规划系统',
           scenario: '制造业生产流程规划、产能调度、资源优化等环节',
           value: '通过智能体技术自动分析生产数据，优化生产排程，减少资源浪费，提升生产效率，助力企业实现生产环节的数智化升级',
-          image: 'data/pic/智能生产管理系统.png',
+          image: imgManufacturePlan,
         }
       ]
     },
@@ -36,19 +34,19 @@ export default function Cases() {
           name: '电力绝缘子爬电距离自动测量装置',
           scenario: '电力设备巡检中绝缘子爬电距离的精准测量环节',
           value: '替代传统人工测量方式，提升测量精度与效率，降低巡检人员工作强度，保障电力设备安全运行',
-          image: 'data/pic/绝缘子爬电距离自动测量系统.png',
+          image: imgInsulator,
         },
         {
           name: '电力巡检红外温度异常检测系统',
           scenario: '电力线路、设备日常巡检中的温度异常监测',
           value: '通过红外AI检测技术实时识别设备温度异常，提前预警故障风险，减少停电事故发生概率，提升电力系统运维可靠性',
-          image: 'data/pic/电力巡检红外温度异常检测系统.png',
+          image: imgInfrared,
         },
         {
           name: '电力设备运检人工智能开放服务平台',
           scenario: '电力企业设备运行、检修全流程管理',
           value: '整合多维度运检数据，提供故障预警、检修计划制定、检修效果评估等一站式服务，开放平台能力赋能电力行业整体数智化水平提升',
-          image: 'data/pic/输变电设备运检人工智能开放服务平台.png',
+          image: imgInspection,
         },
       ]
     },
@@ -61,7 +59,7 @@ export default function Cases() {
           name: '基于卫星影像的光伏装机容量预测项目',
           scenario: '光伏电站规划、容量评估、能源产出预测等环节',
           value: '通过卫星影像分析结合AI算法，精准预测光伏装机容量与能源产出，为光伏电站选址、规划及运营提供数据支撑，降低投资风险',
-          image: 'data/pic/国网山东省电力公司健康评估实验室检测测试区.png',
+          image: imgPV,
         }
       ]
     }
@@ -74,7 +72,7 @@ export default function Cases() {
       name: p.name,
       scenario: p.scenario,
       value: p.value,
-      image: withBase(p.image || 'data/pic/样本标注界面.png'),
+      image: p.image || imgFallback,
     }))
   );
 
