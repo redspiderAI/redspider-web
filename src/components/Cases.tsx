@@ -4,7 +4,14 @@ import { MAX_CONTAINER, THEME2 } from './cardStyles';
 // 图片由 cases 数据里的 `image` 字段提供，不再使用 import.meta.glob
 
 export default function Cases() {
-  
+
+  // Prefix asset paths with Vite base to work in dev ("/") and build ("/redspider-web/")
+  const withBase = (path: string) => {
+    if (!path) return '';
+    if (/^https?:\/\//.test(path)) return path;
+    const base = import.meta.env.BASE_URL || '/';
+    return `${base}${path.replace(/^\//, '')}`;
+  };
 
   const cases = [
     {
@@ -67,7 +74,7 @@ export default function Cases() {
       name: p.name,
       scenario: p.scenario,
       value: p.value,
-      image: p.image || 'data/pic/样本标注界面.png',
+      image: withBase(p.image || 'data/pic/样本标注界面.png'),
     }))
   );
 
