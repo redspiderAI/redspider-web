@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Playwright (node module)
+        run: npm install --no-save playwright@1.45.3
+
       - name: Build
         run: npm run build
 
