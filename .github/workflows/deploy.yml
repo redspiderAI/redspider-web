@@ -33,6 +33,44 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Smoke test (no console errors)
+        run: |
+          npm run preview -- --host --port 4173 --strictPort &
+          PREVIEW_PID=$!
+          npx playwright codegen --help > /dev/null 2>&1 || true
+          node <<'EOF'
+          import { chromium } from 'playwright';
+
+          const url = 'http://127.0.0.1:4173/redspider-web/';
+          const errors = [];
+
+          const go = async () => {
+            const browser = await chromium.launch({ headless: true });
+            const page = await browser.newPage();
+            page.on('console', (msg) => {
+              if (msg.type() === 'error') errors.push(msg.text());
+            });
+            page.on('pageerror', (err) => errors.push(err.message));
+            await page.goto(url, { waitUntil: 'networkidle' });
+            await page.waitForTimeout(2000);
+            await browser.close();
+            if (errors.length) {
+              console.error('Console errors detected:', errors);
+              process.exit(1);
+            }
+            console.log('No console errors detected');
+          };
+
+          go().catch((e) => {
+            console.error(e);
+            process.exit(1);
+          });
+          EOF
+          kill $PREVIEW_PID
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

@@ -9,6 +9,11 @@ export default defineConfig(({ command }) => ({
   optimizeDeps: {
     include: ['lucide-react'],
   },
+  preview: {
+    outDir: 'docs',
+    host: true,
+    port: 4173,
+  },
   build: {
     outDir: 'docs',
   },
