@@ -9,6 +9,7 @@ interface NavigationProps {
 
 export default function Navigation({ activeSection, setActiveSection }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const navItems = useMemo(
     () => [
@@ -30,6 +31,21 @@ export default function Navigation({ activeSection, setActiveSection }: Navigati
     }
     setIsOpen(false);
   };
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+
+    const updateIsMobile = () => {
+      setIsMobile(mediaQuery.matches);
+    };
+
+    updateIsMobile();
+    mediaQuery.addEventListener('change', updateIsMobile);
+
+    return () => {
+      mediaQuery.removeEventListener('change', updateIsMobile);
+    };
+  }, []);
 
   // Scrollspy: monitor scroll position and update activeSection
   useEffect(() => {
@@ -86,36 +102,46 @@ export default function Navigation({ activeSection, setActiveSection }: Navigati
       style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #E5E7EB' }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <div className="flex items-center space-x-3">
-            <div className="h-12 flex items-center">
-              <img src={hzLogoWord} alt="红蛛科技 Red Spider Technology" className="h-full w-auto object-contain" />
+        {!isMobile ? (
+          <div className="hidden md:flex items-center justify-between h-20">
+            <div className="flex items-center space-x-3">
+              <div className="h-12 flex items-center">
+                <img src={hzLogoWord} alt="红蛛科技 Red Spider Technology" className="h-full w-auto object-contain" />
+              </div>
+            </div>
+
+            <div className="hidden md:flex space-x-1">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+                    activeSection === item.id
+                      ? 'bg-red-600 text-white'
+                      : 'text-[#111827] hover:text-red-600'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
             </div>
           </div>
+        ) : (
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-3">
+              <div className="h-10 flex items-center">
+                <img src={hzLogoWord} alt="红蛛科技 Red Spider Technology" className="h-full w-auto object-contain" />
+              </div>
+            </div>
 
-          <div className="hidden md:flex space-x-1">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={`px-4 py-2 rounded-lg transition-all duration-300 ${
-                  activeSection === item.id
-                    ? 'bg-red-600 text-white'
-                    : 'text-[#111827] hover:text-red-600'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
+            <button
+              className="text-[#111827] p-2"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
-
-          <button
-            className="md:hidden text-[#111827] p-2"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+        )}
       </div>
 
       {isOpen && (

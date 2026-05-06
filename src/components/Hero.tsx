@@ -62,8 +62,8 @@ export default function Hero() {
           </div>
 
           {/* Right: three tiles — on md+ position absolute to bottom-right of hero container */}
-          <div className="md:col-span-5 px-5 md:px-0">
-            <div className="md:absolute md:bottom-2 md:right-1 md:z-20 flex items-center gap-4">
+          <div className="hidden md:block md:col-span-5 px-5 md:px-0">
+            <div className="md:absolute md:bottom-2 md:right-1 md:z-20 md:flex items-center gap-4">
               <div
                 className={CARD_CLASSES.className}
                 style={{ backgroundImage: `url(${imgTech})`, backgroundSize: 'cover', backgroundPosition: 'center', width: '15rem', height: '10rem' } as React.CSSProperties}

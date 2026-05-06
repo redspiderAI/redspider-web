@@ -51,10 +51,7 @@ export default function Talent() {
           </p>
         </div>
 
-
-
-        <div className="mt-12 mb-16">
-
+        <div className="mt-12 mb-16 hidden md:block">
           <div className="relative max-w-5xl mx-auto">
             <div className="grid grid-cols-2 grid-rows-2 gap-0 h-[420px] md:h-[520px]">
               {principles.map((principle, index) => {
@@ -98,6 +95,48 @@ export default function Talent() {
                 <div className="text-base md:text-3xl font-semibold text-[#111827]">理念</div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="mt-12 mb-16 md:hidden space-y-4">
+          <div className="mx-auto w-fit rounded-full bg-white px-5 py-3 shadow-lg">
+            <div className="text-center leading-none">
+              <div className="text-lg font-bold text-[#111827]">发展</div>
+              <div className="text-sm font-semibold text-[#111827]">理念</div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {principles.map((principle, index) => {
+              const images = [
+                EyeIcon,
+                HeartIcon,
+                TrendingUpIcon,
+                ThermometerIcon
+              ];
+
+              return (
+                <div
+                  key={index}
+                  className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#15161b] shadow-xl"
+                  style={{ backgroundImage: `url(${images[index]})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                >
+                  <div className="absolute inset-0 bg-black/55" />
+                  <div className="relative z-10 p-5">
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="rounded-xl bg-white/10 p-3 backdrop-blur-sm">
+                        <principle.icon className="text-white" size={24} />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold text-white">{principle.title}</h4>
+                        <p className="text-sm font-semibold text-white/85">{principle.subtitle}</p>
+                      </div>
+                    </div>
+                    <p className="text-sm leading-relaxed text-white/85">{principle.description}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
