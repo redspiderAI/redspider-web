@@ -77,6 +77,7 @@ try {
   assert.equal(await page.getByRole("dialog").isVisible(), false);
   assert.equal(new URL(page.url()).hash, "#contact");
   await page.getByRole("button", { name: "复制视频号名称" }).click();
+  await page.getByRole("status").filter({ hasText: "已复制" }).waitFor();
   assert.match(await page.getByRole("status").textContent(), /已复制/);
   assert.equal(
     await page.evaluate(() => navigator.clipboard.readText()),
