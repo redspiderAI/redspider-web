@@ -53,7 +53,7 @@ node scripts/smoke.mjs http://127.0.0.1:4188/
 4. 执行 `sudo bash /tmp/redspider-deploy.sh <release> /tmp/redspider-<release>.tar.gz`。
 5. 校验公网首页、`/redspider-site/release.json`、静态资源、手机/桌面交互及原报名路径。
 
-脚本将完整静态产物封装为 Docker 镜像，基于当前网关镜像构建独立的网关配置镜像。只新增首页精确路由与 `/redspider-site/` 资源路由，其余路径仍指向原 `web` 服务。只有候选服务健康、网关配置检查通过后，才切换网关；失败时恢复原镜像配置。
+脚本将完整静态产物封装为 Docker 镜像，为每次发布启动独立 Compose 项目与网络别名，再基于当前网关镜像构建独立的网关配置镜像。只新增或更新首页精确路由与 `/redspider-site/` 资源路由，其余路径仍指向原 `web` 服务。只有候选服务健康、网关配置检查通过后，才切换网关；旧服务保留作为回滚目标，失败时恢复原镜像配置。
 
 发布目录为 `/opt/redspider-web/releases/<release>`。原网关镜像标记、原 Compose 环境文件与原项目 release 路径保存在 `/opt/redspider-web/backups/<release>/`，环境文件保持 600 权限，不进仓库。手动回滚：
 
