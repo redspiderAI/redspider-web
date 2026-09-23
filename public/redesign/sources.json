@@ -1,0 +1,41 @@
+{
+  "source": "用户提供的 pic 目录；原项目 data/logo 与 data/contact",
+  "photos": [
+    {
+      "name": "making",
+      "source": "小孩实践.png",
+      "width": 1080,
+      "height": 769
+    },
+    {
+      "name": "together",
+      "source": "小孩实践1.png",
+      "width": 1000,
+      "height": 658
+    },
+    {
+      "name": "workshop",
+      "source": "小孩实践2.png",
+      "width": 1000,
+      "height": 750
+    },
+    {
+      "name": "discovery",
+      "source": "小孩实践3.png",
+      "width": 1000,
+      "height": 750
+    },
+    {
+      "name": "robot-dog",
+      "source": "小孩玩机械狗.png",
+      "width": 1000,
+      "height": 750
+    },
+    {
+      "name": "university",
+      "source": "小孩走进大学.png",
+      "width": 1000,
+      "height": 750
+    }
+  ]
+}

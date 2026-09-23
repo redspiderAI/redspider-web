@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -31,14 +31,13 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        run: npm run build:pages
 
       - name: Smoke test (npm run preview, console errors)
         run: |
-          npm install --no-save playwright@1.45.3
           npx playwright install --with-deps chromium
 
-          npm run preview -- --strictPort --host --port 4173 &
+          npm run preview -- --base=/redspider-web/ --strictPort --host --port 4173 &
           PREVIEW_PID=$!
           sleep 4
 

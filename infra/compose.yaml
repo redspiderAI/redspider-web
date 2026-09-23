@@ -1,0 +1,24 @@
+name: redspider-site
+services:
+  site:
+    image: ${SITE_IMAGE:?Set the verified release image}
+    pull_policy: never
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+      - /tmp
+    networks:
+      application:
+        aliases:
+          - ${SITE_ALIAS:-redspider-site}
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+networks:
+  application:
+    external: true
+    name: teenai-h5_application
