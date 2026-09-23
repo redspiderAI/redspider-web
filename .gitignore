@@ -24,3 +24,6 @@ dist-ssr
 .vscode/*
 docs
 deploy
+.artifacts/
+.playwright-mcp/
+evidence/*.png
