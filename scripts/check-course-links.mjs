@@ -18,11 +18,14 @@ const browser = await chromium.launch({
 });
 try {
   const page = await browser.newPage();
+  const destinations = new Set(expected.map(([, href]) => href));
   await page.route("https://hzai.tech/**", (route) =>
-    route.fulfill({
-      contentType: "text/html",
-      body: "<title>Navigation destination</title>",
-    }),
+    destinations.has(route.request().url())
+      ? route.fulfill({
+          contentType: "text/html",
+          body: "<title>Navigation destination</title>",
+        })
+      : route.continue(),
   );
   for (const [id, destination] of expected) {
     await page.goto(base);
