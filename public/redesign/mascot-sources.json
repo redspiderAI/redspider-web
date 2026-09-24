@@ -1,0 +1,34 @@
+{
+  "source": "用户提供的红蛛吉祥物原图",
+  "processing": "裁去透明边距、等比例缩放、保留透明通道，未重绘形象",
+  "files": [
+    {
+      "source": "蛛1.png",
+      "output": "public/redesign/mascot-maker.webp",
+      "bytes": 52862,
+      "width": 640,
+      "height": 640
+    },
+    {
+      "source": "蛛2.png",
+      "output": "public/redesign/mascot-explorer.webp",
+      "bytes": 47192,
+      "width": 640,
+      "height": 640
+    },
+    {
+      "source": "蛛3.png",
+      "output": "public/redesign/mascot-tech.webp",
+      "bytes": 52956,
+      "width": 640,
+      "height": 640
+    },
+    {
+      "source": "蛛4.png",
+      "output": "public/redesign/mascot-reader.webp",
+      "bytes": 41828,
+      "width": 640,
+      "height": 640
+    }
+  ]
+}

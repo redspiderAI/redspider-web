@@ -1,4 +1,5 @@
-type Kind = "voice" | "companion" | "code" | "wheel" | "car" | "dog" | "arm";
+type Kind =
+  "voice" | "companion" | "code" | "wheel" | "car" | "dog" | "arm" | "camp";
 
 // Original vector illustrations in a consistent hardware sketchbook style.
 export function CourseArt({ kind }: { kind: Kind }) {
@@ -9,11 +10,31 @@ export function CourseArt({ kind }: { kind: Kind }) {
       fill="none"
       aria-hidden="true"
     >
+      {kind === "camp" && (
+        <g
+          stroke="#31544b"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path
+            d="M58 170V82l64-36 63 36v88M47 170h207M90 170v-41h63v41M74 96h20v17H74zM145 96h20v17h-20z"
+            fill="#f9f5ea"
+          />
+          <path d="M188 170V103h51v67M203 117h21v20h-21z" fill="#e5eee5" />
+          <path d="M122 46V25h39l-9 10 9 10h-39" fill="#dd5141" />
+          <circle cx="121" cy="84" r="10" fill="#f4cc6e" />
+          <path
+            d="m220 56 4 10 11 1-8 7 2 11-9-6-9 6 2-11-8-7 11-1z"
+            fill="#f4cc6e"
+          />
+        </g>
+      )}
       <ellipse
         cx="150"
-        cy="181"
-        rx="89"
-        ry="9"
+        cy={kind === "voice" ? 194 : 181}
+        rx={kind === "voice" ? 66 : 89}
+        ry={kind === "voice" ? 7 : 9}
         fill="currentColor"
         opacity=".07"
       />
@@ -24,23 +45,163 @@ export function CourseArt({ kind }: { kind: Kind }) {
         strokeLinejoin="round"
       >
         {kind === "voice" && (
-          <>
+          <g stroke="#947E73" strokeWidth="2.2">
+            {/* Soft ears and a little cotton tail, behind the face and body. */}
             <path
-              d="M92 63C59 23 86 12 110 51M187 55C212 16 242 39 207 74"
-              fill="#E9AA83"
+              d="M121 82C111 67 93 36 103 20C111 7 123 15 129 30C136 46 138 64 137 78Z"
+              fill="#FFFCF5"
             />
             <path
-              d="M86 92C80 45 216 34 218 97L210 145C199 184 93 185 83 149Z"
-              fill="#F3C5A6"
+              d="M161 77C163 54 169 17 183 15C199 12 201 30 194 48C190 61 183 75 179 83Z"
+              fill="#FFFCF5"
             />
-            <ellipse cx="152" cy="116" rx="48" ry="44" fill="#FFFBF4" />
-            <path d="M122 137Q152 152 180 135" />
-            <circle cx="131" cy="106" r="4" fill="currentColor" />
-            <circle cx="174" cy="106" r="4" fill="currentColor" />
-            <path d="M148 119h9M77 132l-15 14M217 132l16 11" />
-            <path d="M48 72v17M38 77v7M249 80v17M260 84v9" stroke="#D64736" />
-            <path d="M118 172l-10 9M186 172l10 9" />
-          </>
+            <path
+              d="M122 69C115 55 104 29 111 25C119 20 126 51 127 68Z"
+              fill="#F2BAB8"
+              stroke="none"
+            />
+            <path
+              d="M170 68C172 50 178 25 185 25C194 27 180 58 175 71Z"
+              fill="#F2BAB8"
+              stroke="none"
+            />
+            <circle cx="186" cy="166" r="13" fill="#FFFCF5" />
+            <path
+              d="M122 133C111 148 112 171 122 181C132 193 168 193 179 179C188 166 183 145 173 133Z"
+              fill="#F8EEE3"
+            />
+            <ellipse
+              cx="150"
+              cy="163"
+              rx="22"
+              ry="24"
+              fill="#FFFCF7"
+              stroke="none"
+            />
+            <ellipse
+              cx="127"
+              cy="185"
+              rx="18"
+              ry="10"
+              transform="rotate(-9 127 185)"
+              fill="#FFFCF5"
+            />
+            <ellipse
+              cx="171"
+              cy="185"
+              rx="18"
+              ry="10"
+              transform="rotate(9 171 185)"
+              fill="#FFFCF5"
+            />
+            <path
+              d="M116 143C105 144 100 155 105 163C110 171 120 164 124 155"
+              fill="#FFFCF5"
+            />
+            <path
+              d="M179 148C188 143 191 134 195 130C199 125 205 128 205 135C205 149 194 160 185 159"
+              fill="#FFFCF5"
+            />
+            <ellipse
+              cx="199"
+              cy="137"
+              rx="3"
+              ry="4"
+              fill="#F1C4BD"
+              stroke="none"
+            />
+            {/* Rounded cheeks, glossy eyes, and a tiny rabbit mouth. */}
+            <path
+              d="M97 102C97 76 117 63 141 63L147 58L153 63C180 61 201 76 203 100C206 123 189 143 152 144C117 145 96 128 97 102Z"
+              fill="#FFFCF5"
+            />
+            <ellipse
+              cx="116"
+              cy="117"
+              rx="11"
+              ry="6"
+              fill="#F3C2BE"
+              stroke="none"
+            />
+            <ellipse
+              cx="183"
+              cy="117"
+              rx="11"
+              ry="6"
+              fill="#F3C2BE"
+              stroke="none"
+            />
+            <ellipse
+              cx="129"
+              cy="103"
+              rx="6.8"
+              ry="8.2"
+              fill="#54413C"
+              stroke="none"
+            />
+            <ellipse
+              cx="171"
+              cy="103"
+              rx="6.8"
+              ry="8.2"
+              fill="#54413C"
+              stroke="none"
+            />
+            <g fill="#FFFFFF" stroke="none">
+              <circle cx="127" cy="100" r="2.3" />
+              <circle cx="169" cy="100" r="2.3" />
+              <circle cx="132" cy="107" r="1.1" />
+              <circle cx="174" cy="107" r="1.1" />
+            </g>
+            <path
+              d="M145 114Q150 111 155 114Q156 116 150 120Q144 116 145 114Z"
+              fill="#DA9694"
+              stroke="none"
+            />
+            <path
+              d="M150 120V122M150 122Q144 128 140 122M150 122Q156 128 160 122"
+              stroke="#886D63"
+              strokeWidth="1.8"
+            />
+            <path
+              d="M149 150C137 141 132 143 134 150L133 156C136 161 144 156 149 153C154 159 164 161 166 156L165 148C165 142 157 144 152 150"
+              fill="#A8C5B3"
+              stroke="#7A9C89"
+              strokeWidth="1.5"
+            />
+            <circle
+              cx="150"
+              cy="152"
+              r="4"
+              fill="#C8DED0"
+              stroke="#7A9C89"
+              strokeWidth="1.5"
+            />
+            <path
+              d="M150 176C147 173 140 169 142 165C144 161 148 163 150 166C152 163 156 161 158 165C160 169 153 174 150 176Z"
+              fill="#DE9994"
+              stroke="none"
+            />
+            {/* A quiet conversational cue for the voice-toy course. */}
+            <path
+              d="M219 72C219 62 228 57 239 59C250 60 255 69 251 77C249 83 242 86 234 84L226 89L227 81C222 79 219 76 219 72Z"
+              fill="#FFFCF5"
+              stroke="#BDCCB5"
+              strokeWidth="1.6"
+            />
+            <g fill="#91AC91" stroke="none">
+              <circle cx="229" cy="72" r="2" />
+              <circle cx="236" cy="72" r="2" />
+              <circle cx="243" cy="72" r="2" />
+            </g>
+            <path d="M65 91V103M59 97H71" stroke="#C0A86E" strokeWidth="2" />
+            <path
+              d="M226 150V158M222 154H230"
+              stroke="#C0A86E"
+              strokeWidth="1.8"
+            />
+            <circle cx="76" cy="139" r="2.5" fill="#B7C9A9" stroke="none" />
+          </g>
         )}
         {kind === "companion" && (
           <>

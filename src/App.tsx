@@ -1,704 +1,680 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
   Check,
   ChevronRight,
-  Copy,
-  Menu,
-  Play,
-  X,
 } from "lucide-react";
-import { CourseArt } from "./components/CourseArt";
+import { CourseCatalog } from "./components/CourseCatalog";
+import {
+  ContactSection,
+  SiteFooter,
+  SiteHeader,
+  type PageName,
+} from "./components/SiteLayout";
+import { Mascot, Photo } from "./components/SiteMedia";
+import { articles, campHome, homeHref, pageHref } from "./content/site";
 
-const media = `${import.meta.env.BASE_URL}redesign/`;
-const channel = "梦不设限AI训练营";
-const courses = [
-  {
-    id: "voice",
-    name: "AI 语音玩具",
-    group: "初识 AI",
-    en: "HELLO, AI",
-    intro: "给玩具一个声音，也给想象一个回应。",
-    detail:
-      "从语音交互开始认识 AI，把麦克风、扬声器和程序连接起来，探索一个能听、能说的玩具是怎样工作的。",
-    topics: ["语音交互", "硬件连接", "创意表达"],
-  },
-  {
-    id: "companion",
-    name: "桌面智能搭子",
-    group: "初识 AI",
-    en: "YOUR LITTLE BUDDY",
-    intro: "让桌面上的小伙伴，有自己的表情与个性。",
-    detail:
-      "把屏幕表情、语音互动和硬件组合在一起，思考人与智能设备如何交流，设计属于自己的桌面伙伴。",
-    topics: ["屏幕交互", "角色设计", "软硬件协作"],
-  },
-  {
-    id: "code",
-    name: "AI 开发",
-    group: "编程创造",
-    en: "CODE AN IDEA",
-    intro: "用代码，把脑海里的点子变成应用。",
-    detail:
-      "从一个想解决的小问题出发，理解 AI 应用的输入、处理和输出，在编程与调试中逐步实现自己的创意。",
-    topics: ["编程思维", "AI 应用", "项目实践"],
-  },
-  {
-    id: "wheel",
-    name: "双轮足机器人",
-    group: "机器人探索",
-    en: "FIND THE BALANCE",
-    intro: "从平衡与运动开始，理解机器人的身体。",
-    detail:
-      "观察轮足结构怎样运动，认识传感器、电机与控制程序的配合，在调试中探索机器人如何保持平衡。",
-    topics: ["运动控制", "传感器", "结构探索"],
-  },
-  {
-    id: "car",
-    name: "AI 智能汽车",
-    group: "编程创造",
-    en: "DRIVE YOUR CODE",
-    intro: "让小车感知环境，跟着你的程序出发。",
-    detail:
-      "以智能小车为载体，把环境感知与运动控制联系起来，探索从获取信号到执行动作的完整过程。",
-    topics: ["环境感知", "编程控制", "动手调试"],
-  },
-  {
-    id: "dog",
-    name: "机器狗",
-    group: "机器人探索",
-    en: "MEET YOUR ROBOT",
-    intro: "认识四足伙伴，探索行走背后的逻辑。",
-    detail:
-      "观察四足机器人的结构与步态，认识关节协同和动作控制，感受程序如何驱动真实世界里的运动。",
-    topics: ["四足结构", "步态观察", "动作编程"],
-  },
-  {
-    id: "arm",
-    name: "机械臂",
-    group: "机器人探索",
-    en: "MAKE A MOVE",
-    intro: "从一个关节到一次抓取，练习精准控制。",
-    detail:
-      "认识机械臂的关节、连杆与末端执行器，通过动作拆解与编程，探索抓取、移动和放置的过程。",
-    topics: ["关节控制", "空间思维", "任务拆解"],
-  },
-] as const;
-type Course = (typeof courses)[number];
-const filters = ["全部课程", "初识 AI", "编程创造", "机器人探索"];
-const articles = [
-  "https://mp.weixin.qq.com/s/mO3kE-TMzw8ihOQo0OMOuA",
-  "https://mp.weixin.qq.com/s/u3DO3J8tOdfsO18_v0utmA",
-  "https://mp.weixin.qq.com/s/orhsg9w7XwRvFtWwkmnV3w",
-  "https://mp.weixin.qq.com/s/vR7QofFtZ4XE93PcBrLK3A",
-];
-
-function Photo({
-  name,
-  alt,
-  className = "",
-  eager = false,
-}: {
-  name: string;
-  alt: string;
-  className?: string;
-  eager?: boolean;
-}) {
+function Breadcrumb({ label }: { label: string }) {
   return (
-    <img
-      className={className}
-      src={`${media}${name}-1400.webp`}
-      srcSet={`${media}${name}-640.webp 640w, ${media}${name}-1400.webp 1400w`}
-      sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 700px"
-      alt={alt}
-      loading={eager ? "eager" : "lazy"}
-      fetchPriority={eager ? "high" : "auto"}
-      width="1400"
-      height="1000"
-    />
+    <nav className="breadcrumb" aria-label="面包屑">
+      <a href={homeHref}>首页</a>
+      <ChevronRight size={14} />
+      <span aria-current="page">{label}</span>
+    </nav>
+  );
+}
+
+function ExperienceCards() {
+  return (
+    <div className="experience-grid">
+      <a className="experience-card" href={pageHref("study", "#family")}>
+        <Photo name="together" alt="孩子们在课堂上合作连接电子元件" />
+        <div className="experience-content">
+          <span className="eyebrow">01 / TOGETHER, WE DISCOVER</span>
+          <h3>亲子研学营</h3>
+          <p>一起观察、一起动手，给共同的好奇留一点时间。</p>
+          <span className="experience-link">
+            看看怎样一起学
+            <ArrowUpRight size={20} />
+          </span>
+        </div>
+      </a>
+      <a className="experience-card" href={pageHref("study", "#university")}>
+        <Photo name="university" alt="孩子与家长参观高校实验室展示" />
+        <div className="experience-content">
+          <span className="eyebrow">02 / HELLO, REAL SCIENCE</span>
+          <h3>高校实验室研学</h3>
+          <p>走进真实的科研环境，把“为什么”带到科学面前。</p>
+          <span className="experience-link">
+            了解实验室研学
+            <ArrowUpRight size={20} />
+          </span>
+        </div>
+      </a>
+    </div>
+  );
+}
+
+function HomePage() {
+  return (
+    <>
+      <section className="hero container">
+        <div className="hero-copy">
+          <p className="eyebrow">
+            <span className="red-dot" />
+            红蛛科技 · 梦不设限 AI 训练营
+          </p>
+          <h1>
+            好奇的小脑袋，
+            <br />
+            做点<span className="handwritten">大事情。</span>
+          </h1>
+          <p className="hero-description">
+            做一个会聊天的玩偶，造一只听得懂话的机械狗。
+            <br className="desktop-break" />
+            从第一件 AI 作品开始，让想象有模有样。
+          </p>
+          <div className="hero-actions">
+            <a className="button button-red" href={pageHref("courses")}>
+              找到我的创造课
+              <ArrowUpRight size={19} />
+            </a>
+            <a className="text-link" href={campHome}>
+              走进 AI 训练营
+              <ArrowUpRight size={17} />
+            </a>
+          </div>
+          <div className="hero-note">
+            <span>边学 · 边做 · 边发现</span>
+            <p>AI 编程 / 智能硬件 / 亲子与高校研学</p>
+          </div>
+        </div>
+        <div className="hero-visual">
+          <div className="hero-circle" />
+          <span className="orbit-text">HELLO, YOUNG MAKER!</span>
+          <span className="doodle-spark spark-one">✳</span>
+          <span className="doodle-spark spark-two">+</span>
+          <div className="mascot-speech">
+            带上好奇心，
+            <br />
+            <strong>和红蛛一起开工！</strong>
+          </div>
+          <Mascot eager className="hero-mascot" />
+          <div className="hero-photo">
+            <Photo name="making" alt="孩子们在课堂上动手制作电路作品" eager />
+            <span>小小创造者的日常 ↗</span>
+          </div>
+          <div className="hero-sticker">
+            <span>IDEA</span>
+            <ArrowRight size={18} />
+            <span>REAL</span>
+          </div>
+        </div>
+      </section>
+      <div className="promise-strip">
+        <div className="container">
+          <span>
+            <i>01</i>把想法说出来
+          </span>
+          <span>
+            <i>02</i>亲手试一试
+          </span>
+          <span>
+            <i>03</i>带着新问题继续
+          </span>
+          <a href="#courses" aria-label="向下查看课程">
+            <ArrowDown size={20} />
+          </a>
+        </div>
+      </div>
+      <section className="section container" id="courses">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow section-kicker">
+              THE MAKER’S MENU / 创造，从兴趣开始
+            </p>
+            <h2>
+              第一件作品，
+              <br />
+              你想做什么？
+            </h2>
+          </div>
+          <div className="heading-aside">
+            <p>
+              能说、能看、能动，也能解决小问题。
+              <br />7 个创造方向，点开就能了解具体课程。
+            </p>
+            <a className="text-link" href={pageHref("courses")}>
+              选课指南与课程详情
+              <ArrowRight size={18} />
+            </a>
+          </div>
+        </div>
+        <CourseCatalog />
+      </section>
+      <section className="experience-section" id="experiences">
+        <div className="container section">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow section-kicker">
+                LEARNING OUTSIDE THE BOX / 走出去看看
+              </p>
+              <h2>世界，也是教室。</h2>
+            </div>
+            <p className="section-intro">
+              和家人一起发现，走进实验室里提问。
+              <br />
+              让课本里的科技，变成眼前的体验。
+            </p>
+          </div>
+          <ExperienceCards />
+        </div>
+      </section>
+      <section className="teaching-section" id="teaching">
+        <div className="container teaching-layout">
+          <div className="teaching-photo">
+            <Photo
+              name="robot-dog"
+              alt="老师围绕机器狗讲解，孩子近距离观察机器人结构"
+            />
+            <span className="photo-label">
+              真实课堂 / 每个“为什么”都值得认真回答
+            </span>
+          </div>
+          <div className="teaching-copy">
+            <p className="eyebrow">LEARN WITH PEOPLE WHO MAKE.</p>
+            <h2>
+              有人带着学，
+              <br />
+              也有空间自己试。
+            </h2>
+            <span className="faculty-label">
+              <span className="red-dot" />
+              高校人工智能资深教授授课
+            </span>
+            <p>
+              从孩子能理解的问题出发，把原理讲清楚，再把时间交给动手实践。连接不通就检查电路，动作不对就调整程序，作品在一次次尝试中成形。
+            </p>
+            <a className="text-link" href={pageHref("about", "#teaching")}>
+              认识红蛛的课堂
+              <ArrowUpRight size={18} />
+            </a>
+          </div>
+        </div>
+      </section>
+      <section className="section container moments" id="moments">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow section-kicker">
+              MADE OF REAL MOMENTS / 课堂里的小片段
+            </p>
+            <h2>“等一下，我再试试。”</h2>
+          </div>
+          <p className="section-intro">认真起来的样子，真好。</p>
+        </div>
+        <div className="moment-grid">
+          <figure>
+            <Photo
+              name="workshop"
+              alt="孩子们围坐课堂长桌，专注调试自己的作品"
+            />
+            <figcaption>
+              <span>动手实践</span>让想法接上电路。
+            </figcaption>
+          </figure>
+          <figure>
+            <Photo name="discovery" alt="两个孩子合作研究桌面上的硬件电路" />
+            <figcaption>
+              <span>一起钻研</span>再试一次，会有什么不同？
+            </figcaption>
+          </figure>
+        </div>
+        <div className="journal">
+          <div>
+            <p className="eyebrow section-kicker">FROM OUR JOURNAL</p>
+            <h3>课堂之外，分享还在继续。</h3>
+            <p>在微信图文里，看看更多课程与活动。</p>
+          </div>
+          <div className="journal-links">
+            {articles.map((url, i) => (
+              <a
+                href={url}
+                key={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`阅读微信图文 ${i + 1}（新窗口打开）`}
+              >
+                <span>0{i + 1}</span>
+                <div>
+                  课程与活动分享<small>微信图文 · 阅读原文</small>
+                </div>
+                <ArrowUpRight size={18} />
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+      <ContactSection />
+    </>
+  );
+}
+
+function CoursesPage() {
+  return (
+    <>
+      <section className="container page-intro courses-intro">
+        <div>
+          <Breadcrumb label="AI 创造课程" />
+          <p className="eyebrow section-kicker">FIND YOUR FIRST PROJECT</p>
+          <h1>
+            从“我喜欢”，
+            <br />
+            到“我做的”。
+          </h1>
+          <p className="page-lead">
+            喜欢聊天、画图，还是想让机器人动起来？
+            <br />
+            先选一个想做的作品，再走进它背后的 AI 世界。
+          </p>
+          <a className="button button-red" href="#catalog">
+            看看全部课程
+            <ArrowDown size={18} />
+          </a>
+        </div>
+        <div className="intro-mascot">
+          <span>
+            你负责想象，
+            <br />
+            我们一起试着实现。
+          </span>
+          <Mascot pose="tech" eager />
+        </div>
+      </section>
+      <section className="container choose-guide" aria-label="按兴趣选课">
+        <div>
+          <span className="guide-number">01</span>
+          <h2>想和 AI 聊天、做应用</h2>
+          <p>从语音玩具、AI 应用开发开始，练习表达需求和创作。</p>
+        </div>
+        <div>
+          <span className="guide-number">02</span>
+          <h2>喜欢拆装，想让作品动起来</h2>
+          <p>看看桌面搭子、机械臂、小车与机械狗，把程序接到硬件上。</p>
+        </div>
+        <div>
+          <span className="guide-number">03</span>
+          <h2>想完整经历一次作品创作</h2>
+          <p>参考暑期营的综合实践方案，了解 AI、建模与电路怎样配合。</p>
+        </div>
+      </section>
+      <section className="section container" id="catalog">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow section-kicker">07 WAYS TO CREATE</p>
+            <h2>选一个，让好奇落地。</h2>
+          </div>
+          <a href={campHome} className="text-link">
+            训练营原始主页
+            <ArrowUpRight size={17} />
+          </a>
+        </div>
+        <CourseCatalog detailed />
+      </section>
+      <section className="faq-section">
+        <div className="container faq-layout">
+          <div>
+            <p className="eyebrow section-kicker">BEFORE YOU START</p>
+            <h2>
+              出发前，
+              <br />
+              你可能想知道。
+            </h2>
+            <Mascot pose="reader" />
+          </div>
+          <div className="faq-list">
+            <details open>
+              <summary>没有编程基础，可以参加吗？</summary>
+              <p>
+                AI
+                应用开发、桌面学习搭子、机械臂、智能小车和机械狗的介绍页均提供零基础学习说明。可先根据兴趣选择，再结合孩子的年级向课程顾问确认。
+              </p>
+            </details>
+            <details>
+              <summary>在哪里上课？每节课多长？</summary>
+              <p>
+                六项主题课程页面标注的地址为杭州市钱塘区文海南路91号，每节课 60
+                分钟。课时总数因课程而异，分别为 5、7、9 或 10 节。
+              </p>
+            </details>
+            <details>
+              <summary>怎样查看费用和报名？</summary>
+              <p>
+                点击课程卡片，会直接进入该课程的介绍与报名页。费用、班级安排和报名信息在对应页面查看和填写。
+              </p>
+            </details>
+            <details>
+              <summary>暑期创造营现在可以报名吗？</summary>
+              <p>
+                当前原页面展示的是 2026 年 8
+                月营期，本站将其保留为往期方案。下一期安排请先向课程顾问确认。
+              </p>
+              <a className="text-link" href={pageHref("about", "#contact")}>
+                咨询下一期安排
+                <ArrowRight size={16} />
+              </a>
+            </details>
+          </div>
+        </div>
+      </section>
+      <section className="container bottom-cta">
+        <div>
+          <p className="eyebrow section-kicker">TAKE A CLOSER LOOK</p>
+          <h2>想先看看真实课堂？</h2>
+        </div>
+        <a className="button button-outline" href={`${homeHref}#moments`}>
+          去看成长现场
+          <ArrowUpRight size={18} />
+        </a>
+      </section>
+    </>
+  );
+}
+
+function StudyPage() {
+  return (
+    <>
+      <section className="container page-intro study-intro">
+        <div>
+          <Breadcrumb label="研学体验" />
+          <p className="eyebrow section-kicker">TAKE YOUR CURIOSITY OUTSIDE</p>
+          <h1>
+            带着问题出发，
+            <br />
+            带着发现回来。
+          </h1>
+          <p className="page-lead">
+            在共同的体验里认识科技，
+            <br />
+            也看见孩子观察、提问和尝试的样子。
+          </p>
+          <div className="hero-actions">
+            <a className="button button-red" href="#family">
+              亲子一起探索
+              <ArrowDown size={18} />
+            </a>
+            <a className="text-link" href="#university">
+              走进高校实验室
+              <ArrowRight size={18} />
+            </a>
+          </div>
+        </div>
+        <div className="intro-mascot explorer-intro">
+          <span>今天，我们去哪里发现？</span>
+          <Mascot pose="explorer" eager />
+        </div>
+      </section>
+      <section className="study-story container" id="family">
+        <div className="story-photo">
+          <Photo name="together" alt="孩子们围绕电子元件共同观察和动手" />
+          <span className="photo-label">一起投入，比给出答案更有意思。</span>
+        </div>
+        <div className="story-copy">
+          <p className="eyebrow section-kicker">
+            01 / A DAY TO DISCOVER TOGETHER
+          </p>
+          <h2>亲子研学营</h2>
+          <p className="story-lead">
+            孩子说“我想试试”，
+            <br />
+            大人说“我们一起”。
+          </p>
+          <p>
+            把陪伴放进一次具体的探索：一起观察科技现象，一起讨论想法，再试着完成一个动手任务。家长也可以放下“标准答案”，听听孩子会怎么解释。
+          </p>
+          <ul className="check-list">
+            <li>
+              <Check size={17} />
+              从共同感兴趣的问题开始
+            </li>
+            <li>
+              <Check size={17} />
+              在观察和制作中交流想法
+            </li>
+            <li>
+              <Check size={17} />
+              用一次分享记录自己的发现
+            </li>
+          </ul>
+          <a className="text-link" href={pageHref("courses")}>
+            先看看可以做什么作品
+            <ArrowUpRight size={18} />
+          </a>
+        </div>
+      </section>
+      <section className="university-section" id="university">
+        <div className="container study-story reverse">
+          <div className="story-photo">
+            <Photo
+              name="university"
+              alt="孩子和家长走进高校实验室参观科技展示"
+            />
+            <span className="photo-label">
+              把书本上的科技，变成眼前的发现。
+            </span>
+          </div>
+          <div className="story-copy">
+            <p className="eyebrow section-kicker">
+              02 / MEET SCIENCE IN PERSON
+            </p>
+            <h2>高校实验室研学</h2>
+            <p className="story-lead">
+              机器为什么这样动？
+              <br />
+              答案，就从眼前找。
+            </p>
+            <p>
+              走进真实科研环境，近距离观察设备与技术应用。带着自己关心的问题听讲解，把看见的现象和学过的知识联系起来。
+            </p>
+            <ul className="check-list">
+              <li>
+                <Check size={17} />
+                认识实验室里的研究与设备
+              </li>
+              <li>
+                <Check size={17} />
+                把“看到了什么”变成具体问题
+              </li>
+              <li>
+                <Check size={17} />
+                回到课堂，用小项目继续探索
+              </li>
+            </ul>
+            <a className="text-link" href={pageHref("about", "#teaching")}>
+              了解我们的教学方式
+              <ArrowUpRight size={18} />
+            </a>
+          </div>
+        </div>
+      </section>
+      <section className="container section study-planning">
+        <div>
+          <p className="eyebrow section-kicker">PLAN A VISIT</p>
+          <h2>
+            给这次出发，
+            <br />
+            留一点准备。
+          </h2>
+          <p>
+            研学的时间、地点、适合年级与活动内容，
+            <br />
+            请结合当期安排沟通确认。
+          </p>
+        </div>
+        <div className="planning-list">
+          <div>
+            <span>01</span>
+            <p>
+              <strong>从兴趣开始</strong>想看机器人，还是更喜欢亲手搭建？
+            </p>
+          </div>
+          <div>
+            <span>02</span>
+            <p>
+              <strong>说说参与情况</strong>
+              孩子的年级、参与人数，以及希望出发的时间。
+            </p>
+          </div>
+          <div>
+            <span>03</span>
+            <p>
+              <strong>确认活动安排</strong>
+              再一起确认地点、行程与需要携带的物品。
+            </p>
+          </div>
+          <a className="button button-red" href={pageHref("about", "#contact")}>
+            咨询研学安排
+            <ArrowUpRight size={18} />
+          </a>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function AboutPage() {
+  return (
+    <>
+      <section className="container page-intro about-intro">
+        <div>
+          <Breadcrumb label="关于红蛛" />
+          <p className="eyebrow section-kicker">RED SPIDER TECHNOLOGY</p>
+          <h1>
+            认真对待，
+            <br />
+            每一个小小的想法。
+          </h1>
+          <p className="page-lead">
+            杭州红蛛科技有限公司
+            <br />
+            把人工智能带进孩子能理解、能参与的实践。
+          </p>
+        </div>
+        <div className="intro-mascot">
+          <span>
+            认识一下，
+            <br />
+            我是你的创造伙伴红蛛。
+          </span>
+          <Mascot pose="reader" eager />
+        </div>
+      </section>
+      <section className="about-manifesto">
+        <div className="container">
+          <p className="eyebrow section-kicker">WHY WE MAKE</p>
+          <h2>学 AI，从做一件真实的事开始。</h2>
+          <p>
+            我们围绕 AI
+            编程、智能硬件、亲子研学和高校实验室研学开展学习体验。一个能对话的玩具、一只会走路的机械狗、一款解决小问题的应用，都是理解技术的入口。
+          </p>
+          <a className="text-link" href={pageHref("courses")}>
+            了解红蛛的课程
+            <ArrowRight size={18} />
+          </a>
+        </div>
+      </section>
+      <section className="container section about-teaching" id="teaching">
+        <div className="teaching-photo">
+          <Photo name="robot-dog" alt="老师与孩子围绕机器狗进行讲解和观察" />
+        </div>
+        <div>
+          <p className="eyebrow section-kicker">OUR CLASSROOM</p>
+          <h2>有原理，也有实践。</h2>
+          <span className="faculty-label">
+            <span className="red-dot" />
+            高校人工智能资深教授授课
+          </span>
+          <div className="teaching-points">
+            <div>
+              <span>01</span>
+              <p>
+                <strong>先问一个好问题</strong>
+                小车怎样知道前面有障碍？机械臂怎样认出一株植物？用具体的问题打开学习。
+              </p>
+            </div>
+            <div>
+              <span>02</span>
+              <p>
+                <strong>给尝试留出时间</strong>
+                接电路、写程序、做测试。遇到不工作的地方，就一起检查和调整。
+              </p>
+            </div>
+            <div>
+              <span>03</span>
+              <p>
+                <strong>讲清自己的作品</strong>
+                它能做什么，哪里还可以改？让孩子表达自己的思考，继续发展新想法。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="mascot-band">
+        <div className="container">
+          <Mascot pose="maker" />
+          <div>
+            <p className="eyebrow section-kicker">MEET RED SPIDER</p>
+            <h2>爱动手，也爱问为什么。</h2>
+            <p>
+              拿起扳手就想试试，举起望远镜就想看得更远。
+              <br />
+              红蛛带着这样的好奇，陪你认识 AI、走进课堂、开始创造。
+            </p>
+          </div>
+          <Mascot pose="explorer" />
+        </div>
+      </section>
+      <ContactSection />
+    </>
   );
 }
 
 function App() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [filter, setFilter] = useState("全部课程");
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [copied, setCopied] = useState(false);
-  const dialog = useRef<HTMLDialogElement>(null);
-  const copyTimer = useRef<ReturnType<typeof setTimeout>>();
-
-  useEffect(() => () => clearTimeout(copyTimer.current), []);
   useEffect(() => {
-    if (selectedCourse) {
-      dialog.current?.showModal();
-      const previous = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = previous;
-      };
-    }
-    dialog.current?.close();
-  }, [selectedCourse]);
-
-  async function copyChannel() {
-    try {
-      await navigator.clipboard.writeText(channel);
-      setCopied(true);
-      clearTimeout(copyTimer.current);
-      copyTimer.current = setTimeout(() => setCopied(false), 3000);
-    } catch {
-      setCopied(false);
-      document.getElementById("channel-name")?.focus();
-    }
-  }
-
-  const navLinks = [
-    ["研学体验", "#experiences"],
-    ["AI 创造课程", "#courses"],
-    ["师资与理念", "#teaching"],
-    ["成长现场", "#moments"],
-  ];
-
+    // A multi-page fragment can arrive before React has mounted its target.
+    const frame = requestAnimationFrame(() => {
+      const id = window.location.hash.slice(1);
+      if (id)
+        document.getElementById(id)?.scrollIntoView({ behavior: "instant" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+  const file = window.location.pathname.split("/").pop();
+  const active: PageName =
+    file === "courses.html"
+      ? "courses"
+      : file === "study.html"
+        ? "study"
+        : file === "about.html"
+          ? "about"
+          : "home";
   return (
-    <>
-      <a className="skip-link" href="#main">
-        跳到主要内容
-      </a>
-      <header className="site-header">
-        <div className="header-inner container">
-          <a href="#home" className="brand" aria-label="红蛛科技首页">
-            <img
-              src={`${media}logo.png`}
-              width="600"
-              height="160"
-              alt="红蛛科技 Red Spider Technology"
-            />
-          </a>
-          <nav className="desktop-nav" aria-label="主导航">
-            {navLinks.map(([label, href]) => (
-              <a href={href} key={href}>
-                {label}
-              </a>
-            ))}
-          </nav>
-          <a className="header-contact" href="#contact">
-            聊聊学习计划 <ArrowUpRight size={17} />
-          </a>
-          <button
-            className="menu-toggle"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label={menuOpen ? "关闭导航" : "打开导航"}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-navigation"
-          >
-            {menuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
-        {menuOpen && (
-          <nav
-            id="mobile-navigation"
-            className="mobile-nav"
-            aria-label="手机导航"
-            onKeyDown={(e) => {
-              if (e.key === "Escape") setMenuOpen(false);
-            }}
-          >
-            {[...navLinks, ["联系我们", "#contact"]].map(([label, href]) => (
-              <a key={href} href={href} onClick={() => setMenuOpen(false)}>
-                {label}
-                <ArrowUpRight size={18} />
-              </a>
-            ))}
-          </nav>
-        )}
-      </header>
+    <div id="top">
+      <SiteHeader active={active} />
       <main id="main">
-        <section className="hero container" id="home">
-          <div className="hero-copy">
-            <p className="eyebrow">
-              <span className="red-dot" /> 梦不设限 · AI 创造从这里开始
-            </p>
-            <h1>
-              从好奇出发，
-              <br />把{" "}
-              <span className="hero-ai">
-                AI
-                <svg viewBox="0 0 160 15" aria-hidden="true">
-                  <path d="M3 10Q75 0 155 7M18 14Q75 5 139 11" />
-                </svg>
-              </span>{" "}
-              做出来<span className="red-period">。</span>
-            </h1>
-            <p className="hero-description">
-              走进高校实验室，跟着教授认识人工智能。
-              <br className="desktop-break" />
-              从第一行代码到会动的机器人，让每个想法都有机会成为作品。
-            </p>
-            <div className="hero-actions">
-              <a className="button button-red" href="#courses">
-                找到我的创造起点 <ArrowUpRight size={19} />
-              </a>
-              <a className="text-link" href="#experiences">
-                去研学，见见真实的 AI <ArrowRight size={17} />
-              </a>
-            </div>
-            <div className="hero-note">
-              <span className="note-line" />
-              <p>
-                亲子研学营 / 高校实验室研学
-                <br />
-                <strong>全阶硬件 + AI 编程课程</strong>
-              </p>
-            </div>
-          </div>
-          <div className="hero-visual">
-            <div className="photo-frame">
-              <Photo
-                name="making"
-                alt="研学课堂上，孩子们一起连接电路、动手制作"
-                eager
-              />
-              <div className="photo-caption">
-                <span>REAL MOMENTS. REAL CREATION.</span>
-                <p>
-                  小小的双手，
-                  <br />
-                  大大的可能。
-                </p>
-              </div>
-              <span className="photo-tag">
-                <span /> 课堂实拍
-              </span>
-            </div>
-            <div className="orbit-stamp" aria-hidden="true">
-              <span>KEEP CURIOUS</span>
-              <svg viewBox="0 0 70 70">
-                <path d="M35 3v64M3 35h64M12 12l46 46M12 58l46-46" />
-              </svg>
-              <span>STAY CREATIVE</span>
-            </div>
-            <div className="maker-note">
-              <span className="maker-symbol">↗</span>
-              <div>
-                <strong>你好，未来创造者。</strong>
-                <span>YOUR IDEAS START HERE</span>
-              </div>
-            </div>
-          </div>
-        </section>
-        <div className="promise-strip">
-          <div className="container promise-inner">
-            <span className="promise-intro">在红蛛，让学习真实发生</span>
-            <span>
-              <i>01</i> 高校教授带你学
-            </span>
-            <span>
-              <i>02</i> 实验室里看前沿
-            </span>
-            <span>
-              <i>03</i> 动手创造自己的作品
-            </span>
-            <a href="#experiences" aria-label="向下探索">
-              <ArrowDown size={22} />
-            </a>
-          </div>
-        </div>
-        <section className="section container experiences" id="experiences">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow section-kicker">
-                01 / LEARNING BEYOND THE CLASSROOM
-              </p>
-              <h2>世界，就是下一间教室。</h2>
-            </div>
-            <p className="section-intro">
-              把屏幕上的 AI，变成眼前的发现。
-              <br />
-              带着问题走进去，带着新的想法回来。
-            </p>
-          </div>
-          <div className="experience-grid">
-            <a className="experience-card" href="#contact">
-              <Photo
-                name="together"
-                alt="两位孩子在研学活动中一起观察和组装电子元件"
-              />
-              <div className="experience-overlay" />
-              <div className="experience-top">
-                <span>一起发现，一起创造</span>
-                <span>01</span>
-              </div>
-              <div className="experience-bottom">
-                <p>PARENT–CHILD CAMP</p>
-                <h3>亲子研学营</h3>
-                <div>
-                  <span>把共同的好奇，变成一次有趣的探索。</span>
-                  <span className="circle-arrow">
-                    <ArrowUpRight />
-                  </span>
-                </div>
-              </div>
-            </a>
-            <a className="experience-card" href="#contact">
-              <Photo
-                name="university"
-                alt="孩子和家长走进高校实验室，参观科研展示"
-              />
-              <div className="experience-overlay" />
-              <div className="experience-top">
-                <span>让前沿科技触手可及</span>
-                <span>02</span>
-              </div>
-              <div className="experience-bottom">
-                <p>UNIVERSITY LAB VISIT</p>
-                <h3>高校实验室研学</h3>
-                <div>
-                  <span>走进真实科研环境，打开关于 AI 的新问题。</span>
-                  <span className="circle-arrow">
-                    <ArrowUpRight />
-                  </span>
-                </div>
-              </div>
-            </a>
-          </div>
-        </section>
-        <section className="courses-section" id="courses">
-          <div className="section container">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow section-kicker">
-                  02 / LESS WATCHING, MORE MAKING
-                </p>
-                <h2>
-                  你的第一个 AI 作品，
-                  <br />
-                  会是什么？
-                </h2>
-              </div>
-              <div className="course-heading-aside">
-                <span className="small-label">全阶硬件 + AI 编程课程</span>
-                <p>
-                  从会说话的玩具，到能行动的机器人。
-                  <br />
-                  让兴趣找到入口，让创造继续进阶。
-                </p>
-              </div>
-            </div>
-            <div className="course-filter" aria-label="筛选课程方向">
-              {filters.map((item) => (
-                <button
-                  key={item}
-                  className={filter === item ? "active" : ""}
-                  aria-pressed={filter === item}
-                  onClick={() => setFilter(item)}
-                >
-                  {item}
-                  {item === "全部课程" && <span>07</span>}
-                </button>
-              ))}
-            </div>
-            <div className="course-grid" aria-live="polite">
-              {courses
-                .filter(
-                  (course) => filter === "全部课程" || course.group === filter,
-                )
-                .map((course) => (
-                  <button
-                    className={`course-card course-${course.id}`}
-                    key={course.id}
-                    onClick={() => setSelectedCourse(course)}
-                    aria-label={`了解${course.name}`}
-                  >
-                    <div className="course-art">
-                      <span className="course-number">
-                        {String(courses.indexOf(course) + 1).padStart(2, "0")}
-                      </span>
-                      <CourseArt kind={course.id} />
-                      <span className="art-plus">+</span>
-                    </div>
-                    <div className="course-card-body">
-                      <p className="course-english">{course.en}</p>
-                      <h3>
-                        {course.name}
-                        <ArrowUpRight size={20} />
-                      </h3>
-                      <p>{course.intro}</p>
-                      <span className="course-tag">{course.group}</span>
-                    </div>
-                  </button>
-                ))}
-              {filter === "全部课程" && (
-                <a href="#contact" className="course-callout">
-                  <span>WHAT'S NEXT?</span>
-                  <svg viewBox="0 0 120 120" aria-hidden="true">
-                    <path d="M60 7v106M7 60h106M22 22l76 76M22 98l76-76" />
-                  </svg>
-                  <h3>
-                    还没想好？
-                    <br />
-                    从你的兴趣聊起。
-                  </h3>
-                  <p>一起寻找适合的学习起点。</p>
-                  <span className="callout-link">
-                    咨询课程 <ArrowUpRight size={22} />
-                  </span>
-                </a>
-              )}
-            </div>
-            <p className="course-footnote">
-              适合年龄、开课时间与具体安排，请联系咨询。
-            </p>
-          </div>
-        </section>
-        <section className="teaching-section" id="teaching">
-          <div className="container teaching-layout">
-            <div className="teaching-photo">
-              <Photo
-                name="robot-dog"
-                alt="老师围绕机器狗讲解，孩子们近距离观察机器人结构"
-              />
-              <span className="teaching-photo-note">
-                从一次真实的提问开始。
-              </span>
-            </div>
-            <div className="teaching-copy">
-              <p className="eyebrow">03 / GOOD QUESTIONS. GREAT TEACHERS.</p>
-              <h2>
-                前沿的知识，
-                <br />
-                面对面地学。
-              </h2>
-              <div className="faculty-label">
-                <span className="red-dot" /> 高校人工智能资深教授授课
-              </div>
-              <p className="teaching-description">
-                杭州红蛛科技有限公司，把人工智能的学习带进真实的课堂与实践。我们关注孩子如何提出问题、理解原理，再一步步把想法做出来。
-              </p>
-              <div className="teaching-points">
-                <div>
-                  <span>01</span>
-                  <p>
-                    <strong>从“为什么”开始</strong>
-                    让好奇心带路，理解技术背后的原理。
-                  </p>
-                </div>
-                <div>
-                  <span>02</span>
-                  <p>
-                    <strong>在动手中找到答案</strong>
-                    连接、编程、调试，把每次尝试变成经验。
-                  </p>
-                </div>
-                <div>
-                  <span>03</span>
-                  <p>
-                    <strong>给自己的想法一个机会</strong>
-                    鼓励提问和表达，让作品留下自己的思考。
-                  </p>
-                </div>
-              </div>
-              <a href="#contact" className="text-link light-link">
-                认识红蛛，聊聊课程 <ArrowUpRight size={18} />
-              </a>
-            </div>
-          </div>
-        </section>
-        <section className="section container moments" id="moments">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow section-kicker">
-                04 / SMALL MOMENTS, BIG DISCOVERIES
-              </p>
-              <h2>认真起来的样子，真好。</h2>
-            </div>
-            <p className="section-intro">
-              那些专注、讨论和恍然大悟的瞬间，
-              <br />
-              都是创造正在发生的证据。
-            </p>
-          </div>
-          <div className="moment-grid">
-            <figure>
-              <Photo
-                name="workshop"
-                alt="课堂长桌旁，孩子们专注连接电路与调试作品"
-              />
-              <figcaption>
-                <span>动手实践</span>让想法接上电路。
-                <ArrowUpRight size={18} />
-              </figcaption>
-            </figure>
-            <figure>
-              <Photo name="discovery" alt="两个孩子合作研究桌面上的硬件电路" />
-              <figcaption>
-                <span>一起钻研</span>再试一次，会有什么不同？
-                <ArrowUpRight size={18} />
-              </figcaption>
-            </figure>
-          </div>
-          <div className="journal">
-            <div>
-              <span className="small-label">继续了解我们</span>
-              <h3>课堂之外，分享仍在继续。</h3>
-              <p>在微信图文里，了解更多课程与活动。</p>
-            </div>
-            <div className="journal-links">
-              {articles.map((url, i) => (
-                <a
-                  href={url}
-                  key={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`阅读微信图文 ${i + 1}（新窗口打开）`}
-                >
-                  <span>0{i + 1}</span>
-                  <div>
-                    课程与活动分享<small>微信图文 · 阅读原文</small>
-                  </div>
-                  <ArrowUpRight size={20} />
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-        <section className="contact-section" id="contact">
-          <div className="container contact-layout">
-            <div className="contact-copy">
-              <p className="eyebrow">LET'S MAKE SOMETHING GREAT.</p>
-              <h2>
-                下一个好点子，
-                <br />
-                从一句“我想试试”开始。
-              </h2>
-              <p>
-                想了解课程、参加研学，或一起开展校园合作？
-                <br />
-                欢迎联系红蛛，聊聊你的想法。
-              </p>
-              <div className="contact-topics">
-                <span>课程咨询</span>
-                <span>研学活动</span>
-                <span>学校 / 机构合作</span>
-              </div>
-            </div>
-            <div className="contact-card">
-              <div className="qr-block">
-                <img
-                  src={`${media}contact-qr.png`}
-                  alt="红蛛科技官方客服微信二维码"
-                  width="180"
-                  height="180"
-                  loading="lazy"
-                />
-                <div>
-                  <strong>
-                    微信扫一扫，
-                    <br />
-                    和我们聊一聊。
-                  </strong>
-                  <span>课程与研学咨询</span>
-                  <a
-                    href={`${media}contact-qr.png`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    打开二维码 <ArrowUpRight size={14} />
-                  </a>
-                </div>
-              </div>
-              <div className="channel-block">
-                <div className="channel-icon">
-                  <Play size={19} fill="currentColor" />
-                </div>
-                <div>
-                  <span>微信视频号 · 搜索关注</span>
-                  <strong id="channel-name" tabIndex={-1}>
-                    {channel}
-                  </strong>
-                </div>
-                <button onClick={copyChannel} aria-label="复制视频号名称">
-                  {copied ? <Check size={18} /> : <Copy size={18} />}
-                </button>
-              </div>
-              <span className="copy-status" role="status">
-                {copied
-                  ? "已复制视频号名称，打开微信搜索即可"
-                  : "在微信里，遇见更多创造的瞬间"}
-              </span>
-            </div>
-          </div>
-        </section>
-      </main>
-      <footer className="site-footer container">
-        <div className="footer-top">
-          <a className="brand" href="#home" aria-label="回到顶部">
-            <img
-              src={`${media}logo.png`}
-              alt="红蛛科技"
-              width="600"
-              height="160"
-            />
-          </a>
-          <p>让好奇生长，让创造发生。</p>
-          <a href="#home" className="back-top">
-            回到顶部 <ArrowUpRight size={16} />
-          </a>
-        </div>
-        <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} 杭州红蛛科技有限公司</span>
-          <span>
-            杭州 · 中国 <span className="footer-dot">/</span> RED SPIDER
-            TECHNOLOGY
-          </span>
-        </div>
-      </footer>
-      <dialog
-        ref={dialog}
-        className="course-dialog"
-        aria-labelledby="course-dialog-title"
-        onClose={() => setSelectedCourse(null)}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) setSelectedCourse(null);
-        }}
-      >
-        {selectedCourse && (
-          <div className="dialog-content">
-            <button
-              className="dialog-close"
-              aria-label="关闭课程介绍"
-              onClick={() => setSelectedCourse(null)}
-            >
-              <X size={24} />
-            </button>
-            <div className={`dialog-art course-${selectedCourse.id}`}>
-              <CourseArt kind={selectedCourse.id} />
-            </div>
-            <div className="dialog-copy">
-              <p className="eyebrow section-kicker">{selectedCourse.en}</p>
-              <h2 id="course-dialog-title">{selectedCourse.name}</h2>
-              <p>{selectedCourse.detail}</p>
-              <div className="dialog-tags">
-                {selectedCourse.topics.map((topic) => (
-                  <span key={topic}>{topic}</span>
-                ))}
-              </div>
-              <p className="dialog-note">
-                以上为课程方向介绍。适合年龄、课时、费用与近期安排，请通过官方客服咨询。
-              </p>
-              <a
-                className="button button-red"
-                href="#contact"
-                onClick={() => setSelectedCourse(null)}
-              >
-                咨询这门课程 <ChevronRight size={18} />
-              </a>
-            </div>
-          </div>
+        {active === "home" ? (
+          <HomePage />
+        ) : active === "courses" ? (
+          <CoursesPage />
+        ) : active === "study" ? (
+          <StudyPage />
+        ) : (
+          <AboutPage />
         )}
-      </dialog>
-    </>
+      </main>
+      <SiteFooter />
+    </div>
   );
 }
 export default App;
