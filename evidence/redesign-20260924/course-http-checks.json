@@ -1,0 +1,50 @@
+[
+  {
+    "url": "https://hzai.tech/AiCampHomePage/",
+    "status": 200,
+    "title": "梦不设限 · AI训练营",
+    "tls_verification": true
+  },
+  {
+    "url": "https://hzai.tech/AiCampSignUp/",
+    "status": 200,
+    "title": "5节课AI语音毛绒玩具体验营",
+    "tls_verification": true
+  },
+  {
+    "url": "https://hzai.tech/ai_camp_3d_desktop/",
+    "status": 200,
+    "title": "自制3D智能桌面学习搭子 — 9节课打造你的AI伙伴",
+    "tls_verification": true
+  },
+  {
+    "url": "https://hzai.tech/ai_camp_miaoda/",
+    "status": 200,
+    "title": "5节课AI产品搭建训练营",
+    "tls_verification": true
+  },
+  {
+    "url": "https://hzai.tech/ai_camp_car/",
+    "status": 200,
+    "title": "AI智能小车创客研学营 — 浙大教授亲授 · 10节课造一台会思考的汽车",
+    "tls_verification": true
+  },
+  {
+    "url": "https://hzai.tech/ai_camp_robot_dog/",
+    "status": 200,
+    "title": "AI智能机械狗创客营 — 9节课造一只有灵魂的AI萌宠",
+    "tls_verification": true
+  },
+  {
+    "url": "https://hzai.tech/ai_camp_arm/",
+    "status": 200,
+    "title": "AI机械臂「植物探索家」研学营 — 7节课让机械臂看见世界",
+    "tls_verification": true
+  },
+  {
+    "url": "https://hzai.tech/ai_camp_uni/",
+    "status": 200,
+    "title": "暑期青少年AI创造营 — 5天沉浸式AI+硬件创造之旅",
+    "tls_verification": true
+  }
+]

@@ -1,18 +1,21 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
   plugins: [react()],
   optimizeDeps: {
-    include: ['lucide-react'],
+    include: ["lucide-react"],
   },
   preview: {
-    outDir: 'docs',
+    outDir: "docs",
     host: true,
     port: 4173,
   },
   build: {
-    outDir: 'docs',
+    outDir: "docs",
+    rollupOptions: {
+      input: ["index.html", "courses.html", "study.html", "about.html"],
+    },
   },
 }));
